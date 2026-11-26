@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f7f5">
+<script>
+ window.__IS_PHONE =
+ /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+ (navigator.maxTouchPoints > 0 &&
+ matchMedia("(pointer: coarse)").matches &&
+ matchMedia("(hover: none)").matches);
+ if (window.__IS_PHONE) document.documentElement.classList.add("phone");
+</script>
+<title>أداة حل منصة الثقافة المالية وكيريو</title>
+<style>
+ :root{
+ --green-700:#14523f;
+ --green-600:#1f7a5c;
+ --green-500:#2f9472;
+ --green-100:#e7f4ee;
+ --green-50:#f2faf6;
+ --ink:#122420;
+ --ink-2:#3d554d;
+ --muted:#5f736b;
+ --line:#e3ebe7;
+ --bg:#f3f7f5;
+ --surface:#ffffff;
+ --surface-2:#f8fbf9;
+ --amber:#9a6512;
+ --amber-bg:#fff8e8;
+ --red:#b9382f;
+ --red-bg:#fdf0ee;
+ --blue:#2364a8;
+ --blue-bg:#eaf3ff;
+ --radius-lg:20px;
+ --radius:14px;
+ --radius-sm:10px;
+ --shadow-sm:0 1px 2px rgba(18,36,32,.04), 0 10px 28px rgba(18,36,32,.06);
+ --shadow:0 16px 44px rgba(18,36,32,.10);
+ --max:980px;
+ }
+ *{box-sizing:border-box}
+ html,body{margin:0;padding:0}
+ body{
+ font-family:"Segoe UI","Noto Naskh Arabic",Tahoma,Arial,system-ui,sans-serif;
+ background:
+ radial-gradient(1100px 560px at 85% -12%, #e4f4ec 0%, rgba(228,244,236,0) 62%),
+ radial-gradient(800px 420px at 8% 4%, #eef7f2 0%, rgba(238,247,242,0) 55%),
+ var(--bg);
+ color:var(--ink);
+ min-height:100vh;
+ -webkit-font-smoothing:antialiased;
+ }
+ button{font-family:inherit}
+ button:focus-visible, input:focus-visible, summary:focus-visible{
+ outline:2px solid rgba(31,122,92,.45);
+ outline-offset:2px;
+ }
+ img{max-width:100%}
+
+ /* ===== Header ===== */
+ .app-header{
+ max-width:var(--max);
+ margin:0 auto;
+ padding:18px 20px 6px;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ }
+ .brand{display:flex;align-items:center;gap:11px;min-width:0}
+ .brand-avatar{
+ width:42px;height:42px;border-radius:13px;object-fit:cover;flex:none;
+ border:1px solid var(--line);background:var(--green-100);
+ box-shadow:0 2px 8px rgba(18,36,32,.06);
+ }
+ .brand h1{font-size:17px;line-height:1.2;margin:0;font-weight:800;letter-spacing:-.2px}
+ .brand p{margin:3px 0 0;font-size:11.5px;color:var(--muted)}
+ .header-actions{margin-inline-start:auto;display:flex;align-items:center;gap:8px;flex:none}
+ .mock-pill{
+ display:inline-flex;align-items:center;gap:5px;
+ background:var(--green-100);color:var(--green-700);
+ font-size:11px;font-weight:800;border-radius:999px;padding:5px 10px;
+ white-space:nowrap;
+ }
+ .mock-pill i{width:6px;height:6px;border-radius:50%;background:var(--green-600);display:inline-block}
+
+ /* ===== Stepper ===== */
+ .stepper{
+ max-width:var(--max);
+ margin:8px auto 0;
+ padding:0 20px;
+ display:flex;
+ gap:4px;
+ }
+ .step{
+ flex:1;min-width:0;
+ display:flex;align-items:center;justify-content:center;gap:8px;
+ background:transparent;border:0;border-radius:12px;
+ padding:9px 6px;cursor:pointer;
+ color:var(--muted);transition:.18s;
+ }
+ .step .dot{
+ width:27px;height:27px;border-radius:50%;flex:none;
+ display:grid;place-items:center;
+ background:#e8efec;color:var(--muted);
+ font-size:12px;font-weight:800;
+ transition:.18s;
+ }
+ .step .lbl{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .step:hover:not(.locked){background:rgba(255,255,255,.6)}
+ .step.active{color:var(--green-700);background:#fff;box-shadow:var(--shadow-sm)}
+ .step.active .dot{background:var(--green-600);color:#fff;box-shadow:0 0 0 4px var(--green-100)}
+ .step.done .dot{background:var(--green-100);color:var(--green-700)}
+ .step.done .dot::before{content:"✓";font-size:13px}
+ .step.done .dot .num{display:none}
+ .step.locked{opacity:.5;cursor:not-allowed}
+
+ /* ===== Main ===== */
+ .wrap{max-width:var(--max);margin:0 auto;padding:10px 20px 120px}
+ .panel{
+ display:none;
+ background:var(--surface);
+ border:1px solid var(--line);
+ border-radius:var(--radius-lg);
+ box-shadow:var(--shadow-sm);
+ padding:24px;
+ }
+ .panel.active{display:block;animation:panelIn .22s ease both}
+ @keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+ .panel-head{margin:0 0 16px}
+ .panel-head h2{margin:0 0 4px;font-size:19px;letter-spacing:-.3px}
+ .panel-head p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.75}
+ .panel-head .kicker{
+ display:inline-block;font-size:10.5px;font-weight:800;color:var(--green-700);
+ background:var(--green-100);border-radius:999px;padding:4px 9px;margin-bottom:8px;
+ }
+
+ /* ===== Type cards ===== */
+ .type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+ .type-card{
+ position:relative;display:flex;gap:12px;align-items:flex-start;
+ text-align:start;cursor:pointer;
+ background:#fff;border:1.5px solid var(--line);border-radius:16px;
+ padding:16px 16px 16px 38px;
+ transition:.18s;
+ }
+ .type-card:hover{border-color:#b9d8c9;box-shadow:0 8px 22px rgba(18,36,32,.06);transform:translateY(-1px)}
+ .type-card.selected{border-color:var(--green-600);background:var(--green-50);box-shadow:0 0 0 3px rgba(31,122,92,.09)}
+ .type-icon{
+ width:43px;height:43px;border-radius:12px;flex:none;
+ display:grid;place-items:center;font-size:21px;
+ background:var(--green-100);
+ }
+ .type-body{min-width:0;display:block;padding-top:1px}
+ .type-body b{display:block;font-size:14px;font-weight:800;margin-bottom:3px}
+ .type-body small{display:block;font-size:11.5px;line-height:1.55;color:var(--muted)}
+ .type-check{
+ position:absolute;top:14px;inset-inline-end:14px;
+ width:20px;height:20px;border-radius:50%;
+ border:1.5px solid #cfdcd6;background:#fff;
+ display:grid;place-items:center;
+ color:transparent;font-size:11px;font-weight:900;
+ transition:.18s;
+ }
+ .selected .type-check{background:var(--green-600);border-color:var(--green-600);color:#fff}
+ .sub-mode{margin-top:14px}
+ .sub-mode-title{
+ display:flex;align-items:center;gap:7px;
+ margin:0 2px 8px;font-size:12px;font-weight:800;color:var(--ink-2);
+ }
+ .sub-mode-title::before{
+ content:"";width:3px;height:14px;border-radius:2px;background:var(--green-600);flex:none;
+ }
+ .sub-mode-title span{font-weight:600;color:var(--muted)}
+ .type-card.type-second{
+ width:100%;
+ background:linear-gradient(180deg,#f8fcfa 0%,#fff 100%);
+ border-style:dashed;
+ }
+ .type-card.type-second:hover{border-style:solid}
+ .type-card.type-second.selected{border-style:solid}
+ .type-card.type-second .type-icon{background:#eaf3ff}
+ .type-badge{
+ display:inline-flex;align-items:center;gap:4px;flex:none;
+ margin-inline-start:auto;align-self:center;
+ background:var(--blue-bg);color:var(--blue);
+ font-size:10.5px;font-weight:800;border-radius:999px;padding:4px 9px;
+ white-space:nowrap;
+ }
+
+ /* ===== Settings ===== */
+ .settings-block{margin-top:18px}
+ .settings-block:first-child{margin-top:0}
+ .block-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;margin:0 0 9px}
+ .block-title .n{
+ width:20px;height:20px;border-radius:7px;background:var(--green-100);color:var(--green-700);
+ display:grid;place-items:center;font-size:11px;font-weight:900;flex:none;
+ }
+ .choice-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+ .choice{
+ display:flex;align-items:center;gap:10px;text-align:start;
+ border:1.5px solid var(--line);background:#fff;border-radius:12px;
+ padding:12px 13px;cursor:pointer;transition:.15s;
+ }
+ .choice:hover{border-color:#b9d8c9;background:var(--surface-2)}
+ .choice.selected{border-color:var(--green-600);background:var(--green-50)}
+ .choice .radio{
+ width:18px;height:18px;border-radius:50%;border:1.5px solid #c6d6cf;flex:none;
+ display:grid;place-items:center;transition:.15s;
+ }
+ .choice.selected .radio{border-color:var(--green-600);background:var(--green-600)}
+ .choice.selected .radio::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+ .choice .ct b{display:block;font-size:13px;font-weight:800}
+ .choice .ct small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+ .chips{display:flex;gap:8px;flex-wrap:wrap}
+ .chip{
+ display:inline-flex;align-items:center;gap:7px;
+ border:1.5px solid var(--line);background:#fff;color:var(--ink-2);
+ border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:800;
+ cursor:pointer;transition:.15s;
+ }
+ .chip:hover{border-color:#b9d8c9}
+ .chip .tick{
+ width:15px;height:15px;border-radius:50%;border:1.5px solid #cfdcd6;
+ display:grid;place-items:center;color:transparent;font-size:9px;flex:none;
+ }
+ .chip.selected{background:var(--green-600);border-color:var(--green-600);color:#fff}
+ .chip.selected .tick{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.6);color:#fff}
+ .segmented{
+ display:inline-flex;gap:4px;background:var(--surface-2);
+ border:1px solid var(--line);border-radius:12px;padding:4px;
+ max-width:100%;flex-wrap:wrap;
+ }
+ .segmented button{
+ border:0;background:transparent;color:var(--muted);
+ border-radius:9px;padding:8px 15px;font-size:12.5px;font-weight:800;
+ cursor:pointer;transition:.15s;white-space:nowrap;
+ }
+ .segmented button:hover{color:var(--green-700)}
+ .segmented button.selected{background:#fff;color:var(--green-700);box-shadow:var(--shadow-sm)}
+ .hint{font-size:11.5px;line-height:1.75;color:var(--muted);margin:8px 0 0}
+ .hint.info{
+ background:var(--blue-bg);color:#24558f;border:1px solid #cfe0f5;
+ border-radius:10px;padding:9px 11px;
+ }
+ .hint.warn{
+ background:var(--amber-bg);color:var(--amber);border:1px solid #f0dfb5;
+ border-radius:10px;padding:9px 11px;
+ }
+ .divider{height:1px;background:var(--line);margin:20px 0 0}
+ details.advanced{
+ margin-top:18px;border:1px solid var(--line);border-radius:12px;
+ background:var(--surface-2);overflow:hidden;
+ }
+ details.advanced summary{
+ list-style:none;cursor:pointer;padding:12px 14px;
+ display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--ink-2);
+ }
+ details.advanced summary::-webkit-details-marker{display:none}
+ details.advanced summary .chev{margin-inline-start:auto;transition:.2s;color:var(--muted)}
+ details.advanced[open] summary .chev{transform:rotate(180deg)}
+ details.advanced .advanced-body{padding:0 14px 6px}
+ .switch{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0}
+ .switch-text b{display:block;font-size:12.5px;font-weight:800}
+ .switch-text span{display:block;font-size:11px;line-height:1.6;color:var(--muted);margin-top:2px}
+ .toggle{position:relative;width:44px;height:26px;flex:none;cursor:pointer}
+ .toggle input{opacity:0;width:0;height:0;position:absolute}
+ .toggle i{position:absolute;inset:0;background:#d6e2dc;border-radius:999px;transition:.18s}
+ .toggle i::after{
+ content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;
+ top:3px;inset-inline-start:3px;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.18);
+ }
+ .toggle input:checked + i{background:var(--green-600)}
+ .toggle input:checked + i::after{transform:translateX(-18px)}
+
+ /* ===== Concurrency Control ===== */
+ .concurrency-grid{
+ display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;
+ }
+ @media (max-width:600px){
+ .concurrency-grid{grid-template-columns:repeat(2,1fr);}
+ }
+ .concurrency-btn{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 6px;
+ cursor:pointer;transition:.15s;text-align:center;gap:3px;
+ }
+ .concurrency-btn:hover{border-color:#b9d8c9;background:var(--surface-2)}
+ .concurrency-btn.selected{border-color:var(--green-600);background:var(--green-50);box-shadow:0 0 0 2px rgba(31,122,92,.12)}
+ .concurrency-btn b{font-size:14px;color:var(--ink);display:flex;align-items:center;gap:4px}
+ .concurrency-btn.selected b{color:var(--green-700)}
+ .concurrency-btn span{font-size:10.5px;color:var(--muted);white-space:nowrap}
+ .live-concurrency-bar{
+ display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+ background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+ padding:8px 12px;margin-top:12px;
+ }
+ .lcb-label{font-size:12px;font-weight:800;color:var(--ink-2);white-space:nowrap}
+ .lcb-hint{font-size:11px;color:var(--green-700);font-weight:700;margin-inline-start:auto;white-space:nowrap}
+
+ /* ===== Accounts ===== */
+ .acc-toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:11px}
+ .count-pill{
+ background:var(--green-100);color:var(--green-700);
+ border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:800;
+ white-space:nowrap;
+ }
+ .acc-toolbar .hint{margin:0;font-size:11px}
+ .account{
+ display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+ border:1px solid var(--line);border-radius:12px;background:var(--surface-2);
+ padding:8px;margin-bottom:8px;
+ }
+ .account input{
+ width:100%;border:1px solid #d7e2dc;background:#fff;border-radius:9px;
+ padding:10px 11px;font-size:13px;color:var(--ink);font-family:inherit;
+ direction:ltr;text-align:left;transition:.15s;
+ }
+ .account input::placeholder{color:#9aada5;direction:rtl;text-align:right}
+ .account input:focus{outline:2px solid rgba(31,122,92,.28);border-color:var(--green-600)}
+ .acc-code{flex:1 1 150px}
+ .pw-wrap{position:relative;flex:1.5 1 200px}
+ .pw-wrap input{padding-left:38px}
+ .pw-wrap .eye{
+ position:absolute;top:50%;left:4px;transform:translateY(-50%);
+ width:32px;height:32px;border:0;background:transparent;color:var(--muted);
+ border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:14px;
+ }
+ .pw-wrap .eye:hover{background:var(--surface-2);color:var(--green-700)}
+ .icon-btn{
+ width:38px;height:38px;flex:none;border-radius:9px;
+ border:1px solid var(--line);background:#fff;color:var(--muted);
+ display:grid;place-items:center;cursor:pointer;font-size:14px;transition:.15s;
+ }
+ .icon-btn:hover{background:var(--surface-2)}
+ .icon-btn.danger{color:var(--red);border-color:#f1cdc8;background:#fffafa}
+ .icon-btn.danger:hover{background:var(--red-bg)}
+ .add-account{
+ width:100%;display:flex;align-items:center;justify-content:center;gap:7px;
+ border:1.5px dashed #a9cdbd;background:var(--green-50);color:var(--green-700);
+ border-radius:12px;padding:11px;font-size:13px;font-weight:800;cursor:pointer;transition:.15s;
+ }
+ .add-account:hover{background:var(--green-100);border-color:var(--green-600)}
+
+ /* ===== Alerts ===== */
+ .alert{
+ display:flex;align-items:flex-start;gap:8px;
+ border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.7;
+ margin-top:12px;
+ }
+ .alert.error{background:var(--red-bg);color:var(--red);border:1px solid #f3cfca}
+ .alert.warn{background:var(--amber-bg);color:var(--amber);border:1px solid #f0dfb5}
+ .alert.info{background:var(--blue-bg);color:#24558f;border:1px solid #cfe0f5}
+ .alert[hidden]{display:none}
+
+ /* ===== Review / summary ===== */
+ .summary{
+ border:1px solid var(--line);border-radius:15px;background:var(--surface-2);
+ padding:15px;
+ }
+ .summary-top{display:flex;align-items:flex-start;gap:10px}
+ .summary-title{font-size:15px;font-weight:800}
+ .summary-sub{font-size:12px;color:var(--muted);line-height:1.7;margin-top:3px}
+ .summary-top .btn{margin-inline-start:auto;flex:none}
+ .summary-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+ .tag{
+ display:inline-flex;align-items:center;gap:5px;
+ background:#fff;border:1px solid var(--line);border-radius:999px;
+ padding:5px 10px;font-size:11.5px;font-weight:700;color:var(--ink-2);
+ }
+ .tag b{color:var(--green-700);font-weight:800}
+ .progress-card{
+ margin-top:12px;border:1px solid var(--line);border-radius:15px;
+ background:#fff;padding:14px;
+ }
+ .progress-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+ .progress-top .lbl{font-size:12.5px;font-weight:800;color:var(--ink-2)}
+ .progress-top .pct{font-size:12px;font-weight:800;color:var(--green-700);font-variant-numeric:tabular-nums}
+ .bar{height:9px;background:#e9f0ed;border-radius:999px;overflow:hidden}
+ .bar > i{
+ display:block;height:100%;width:0;border-radius:inherit;
+ background:linear-gradient(90deg,var(--green-600),var(--green-500));
+ transition:width .3s ease;
+ }
+ .progress-foot{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font-size:11px;color:var(--muted)}
+
+ .results-head{display:flex;align-items:center;gap:8px;margin:20px 0 9px}
+ .results-head h3{font-size:13.5px;margin:0;font-weight:800}
+ .results-head span{font-size:11px;color:var(--muted);margin-inline-start:auto}
+ .results{display:grid;gap:9px}
+ .result{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+ .result-head{
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+ padding:11px 13px;background:var(--surface-2);border-bottom:1px solid var(--line);
+ }
+ .r-id{min-width:0}
+ .r-code{font-size:13px;font-weight:800;direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+ .r-meta{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+ .status{
+ margin-inline-start:auto;font-size:11px;font-weight:800;border-radius:999px;
+ padding:4px 10px;white-space:nowrap;
+ }
+ .status.run{background:var(--blue-bg);color:var(--blue)}
+ .status.ok{background:var(--green-100);color:var(--green-700)}
+ .status.fail{background:var(--red-bg);color:var(--red)}
+ .status.stop{background:#eef1f0;color:#5c6f68}
+ .result-body{padding:11px 13px}
+ .r-msg{font-size:12px;line-height:1.7;color:var(--ink-2);margin:0 0 9px}
+ .r-msg.ok{color:var(--green-700);font-weight:700}
+ .r-msg.fail{color:var(--red);font-weight:700}
+ .r-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+ .r-bar-row .bar{flex:1;height:7px}
+ .r-title{font-size:10.5px;color:var(--muted);white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis}
+ .r-count{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+ .log-toggle{
+ display:inline-flex;align-items:center;gap:6px;
+ border:1px solid var(--line);background:#fff;color:var(--ink-2);
+ border-radius:9px;padding:7px 10px;font-size:11.5px;font-weight:700;
+ cursor:pointer;transition:.15s;
+ }
+ .log-toggle:hover{background:var(--surface-2);border-color:#cfe0d8}
+ .log-toggle .chev{transition:transform .2s;font-size:9px;color:var(--muted)}
+ .log-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+ .log-wrap{display:none;margin-top:8px}
+ .log-wrap.open{display:block}
+ .log{
+ background:#0f1e19;color:#d6e8df;border-radius:10px;
+ padding:9px 10px;font-family:Consolas,"Courier New",monospace;
+ font-size:11px;line-height:1.75;max-height:180px;overflow:auto;
+ direction:rtl;text-align:right;
+ }
+ .log div{white-space:pre-wrap;overflow-wrap:anywhere}
+ .log .t{color:#7fa799;font-size:10px;margin-inline-end:5px}
+ .log .ok{color:#8fe3b6}
+ .log .err{color:#ff9b9b}
+ .log .wrn{color:#ffd479}
+ .log .sys{color:#9fd6c2}
+
+ /* ===== Empty / bank ===== */
+ .empty{
+ border:1.5px dashed #d5e3dc;border-radius:14px;background:var(--surface-2);
+ text-align:center;padding:26px 16px;color:var(--muted);font-size:12.5px;line-height:1.8;
+ margin-top:12px;
+ }
+ .empty .big{display:block;font-size:26px;margin-bottom:6px}
+ .empty b{color:var(--ink-2);font-size:13.5px}
+ details.bank{
+ margin-top:16px;border:1px solid var(--line);border-radius:14px;
+ background:var(--surface-2);overflow:hidden;
+ }
+ details.bank summary{
+ list-style:none;cursor:pointer;padding:12px 14px;
+ display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--ink-2);
+ }
+ details.bank summary::-webkit-details-marker{display:none}
+ details.bank summary .muted{margin-inline-start:auto;font-size:11px;color:var(--muted);font-weight:600}
+ .bank-body{padding:0 12px 12px;display:grid;gap:7px}
+ .bank-row{
+ display:flex;align-items:center;gap:9px;
+ background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+ font-size:11.5px;
+ }
+ .bank-row .grade{
+ width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+ font-weight:900;font-size:11px;flex:none;
+ }
+ .grade.ss{background:#e7f4ee;color:#14523f}
+ .grade.s{background:#eaf3ff;color:#2364a8}
+ .grade.a{background:#fff8e8;color:#9a6512}
+ .bank-row .bk-main{min-width:0}
+ .bank-row .bk-main b{display:block;font-size:12px}
+ .bank-row .bk-main small{display:block;color:var(--muted);font-size:10.5px;margin-top:1px}
+ .bank-row .bk-score{margin-inline-start:auto;font-weight:800;color:var(--green-700);white-space:nowrap}
+
+ /* ===== Sticky action bar ===== */
+ .actionbar{
+ position:fixed;left:0;right:0;bottom:0;z-index:60;
+ background:rgba(255,255,255,.94);
+ -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+ border-top:1px solid var(--line);
+ padding-bottom:env(safe-area-inset-bottom);
+ box-shadow:0 -8px 30px rgba(18,36,32,.05);
+ }
+ .actionbar-inner{
+ max-width:var(--max);margin:0 auto;padding:12px 20px;
+ display:flex;align-items:center;gap:10px;
+ }
+ .ab-side{display:flex;align-items:center;gap:8px;flex:none}
+ .ab-meta{
+ flex:1;min-width:0;text-align:center;font-size:11.5px;color:var(--muted);
+ line-height:1.5;
+ }
+ .ab-meta b{color:var(--ink-2)}
+ .btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ border:0;border-radius:11px;padding:11px 18px;
+ font-size:13px;font-weight:800;cursor:pointer;transition:.15s;
+ white-space:nowrap;
+ }
+ .btn.primary{
+ background:var(--green-600);color:#fff;
+ box-shadow:0 7px 18px rgba(31,122,92,.24);
+ }
+ .btn.primary:hover{background:var(--green-700)}
+ .btn.primary:disabled{background:#b9cfc5;box-shadow:none;cursor:not-allowed}
+ .btn.secondary{background:#fff;color:var(--ink-2);border:1px solid var(--line)}
+ .btn.secondary:hover{background:var(--surface-2)}
+ .btn.danger{background:var(--red);color:#fff;box-shadow:0 7px 18px rgba(185,56,47,.2)}
+ .btn.danger:hover{background:#a12f27}
+ .btn.ghost{background:transparent;color:var(--green-700);padding:8px 10px}
+ .btn.ghost:hover{background:var(--green-50)}
+ .btn[hidden]{display:none}
+
+ /* ===== Footer ===== */
+ .foot{
+ max-width:var(--max);margin:18px auto 0;padding:0 20px;
+ display:flex;align-items:center;justify-content:center;gap:8px;
+ color:var(--muted);font-size:11.5px;text-align:center;
+ }
+ .foot img{width:24px;height:24px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+
+ /* ===== Toast ===== */
+ .toast{
+ position:fixed;top:14px;left:50%;transform:translate(-50%,-14px);
+ background:#122420;color:#fff;border-radius:10px;padding:9px 14px;
+ font-size:12px;font-weight:700;z-index:100;opacity:0;pointer-events:none;
+ transition:.2s;box-shadow:var(--shadow);max-width:calc(100vw - 32px);
+ }
+ .toast.show{opacity:1;transform:translate(-50%,0)}
+
+ /* ===== Responsive ===== */
+ @media (max-width:720px){
+ .app-header{padding:14px 14px 4px}
+ .brand-avatar{width:38px;height:38px;border-radius:11px}
+ .brand h1{font-size:15.5px}
+ .brand p{font-size:10.5px}
+ .mock-pill{display:none}
+ .stepper{padding:0 10px;gap:2px}
+ .step{flex-direction:column;gap:3px;padding:7px 2px}
+ .step .lbl{font-size:10px}
+ .step .dot{width:25px;height:25px;font-size:11px}
+ .wrap{padding:8px 12px 128px}
+ .panel{padding:16px;border-radius:17px}
+ .panel-head h2{font-size:17px}
+ .panel-head p{font-size:12px}
+ .type-grid{grid-template-columns:1fr;gap:9px}
+ .type-card{padding:13px 13px 13px 36px}
+ .type-icon{width:40px;height:40px;font-size:19px}
+ .choice-row{grid-template-columns:1fr}
+ .account{padding:7px}
+ .acc-code{flex:1 1 100%}
+ .pw-wrap{flex:1 1 100%}
+ .actionbar-inner{padding:10px 12px;gap:8px}
+ .ab-meta{display:none}
+ .btn{padding:11px 15px;font-size:12.5px}
+ .summary-top{flex-wrap:wrap}
+ .summary-top .btn{margin-inline-start:0;padding-inline:0}
+ .r-title{max-width:40%}
+ }
+ @media (max-width:380px){
+ .brand p{display:none}
+ .btn{padding:10px 13px;font-size:12px}
+ }
+ @media (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+ html{scroll-behavior:auto}
+ }
+ /* ===== Live Background Jobs Banner ===== */
+ .live-jobs-container{max-width:var(--max);margin:4px auto 8px;padding:0 20px;}
+ .live-jobs-pill{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ background:linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(6, 95, 70, 0.28));
+ border:1px solid rgba(52, 211, 153, 0.45);
+ border-radius:12px;padding:10px 16px;
+ cursor:pointer;font-size:13px;font-weight:700;color:#34d399;
+ box-shadow:0 4px 15px rgba(16, 185, 129, 0.15);
+ transition:all .2s ease;
+ }
+ .live-jobs-pill:hover{
+ background:linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 95, 70, 0.4));
+ border-color:rgba(52, 211, 153, 0.7);
+ transform:translateY(-1px);
+ box-shadow:0 6px 20px rgba(16, 185, 129, 0.25);
+ }
+ .live-pulse{
+ width:10px;height:10px;background:#10b981;border-radius:50%;
+ box-shadow:0 0 10px #10b981;animation:pulseLive 1.4s infinite;flex-shrink:0;
+ }
+ @keyframes pulseLive{
+ 0%,100%{transform:scale(1);opacity:1}
+ 50%{transform:scale(1.35);opacity:.6}
+ }
+ .live-act{
+ background:rgba(16, 185, 129, 0.2);padding:4px 12px;
+ border-radius:8px;font-size:12px;color:#a7f3d0;display:flex;align-items:center;gap:4px;
+ }
+ .stop-single-btn{
+ background:rgba(239, 68, 68, 0.12);color:#f87171;border:1px solid rgba(239, 68, 68, 0.3);
+ border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;
+ margin-inline-start:auto;
+ }
+ .stop-single-btn:hover{background:rgba(239, 68, 68, 0.25);border-color:#f87171;}
+
+ /* ===== Premium dark glass UI refresh ===== */
+ @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+ :root{
+ color-scheme:dark;
+ --green-700:#d6ad36;--green-600:#e4bd4b;--green-500:#f2d779;
+ --green-100:rgba(226,188,70,.13);--green-50:rgba(226,188,70,.07);
+ --ink:#f6f0df;--ink-2:#d6cfbb;--muted:#9b9586;--line:rgba(255,255,255,.085);
+ --bg:#070707;--surface:rgba(19,19,19,.82);--surface-2:rgba(255,255,255,.035);
+ --amber:#edc85d;--amber-bg:rgba(237,200,93,.1);
+ --red:#ff7777;--red-bg:rgba(255,95,95,.09);
+ --blue:#8bbdff;--blue-bg:rgba(91,157,255,.1);
+ --radius-lg:25px;--radius:18px;--radius-sm:12px;
+ --shadow-sm:0 12px 36px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035);
+ --shadow:0 22px 65px rgba(0,0,0,.48);
+ --max:1040px;
+ }
+ html{background:#070707;scroll-behavior:smooth}
+ body{
+ font-family:"Alexandria","Inter","SF Pro Display","Segoe UI",sans-serif;
+ background:
+ radial-gradient(900px 520px at 88% -12%,rgba(210,169,47,.12),transparent 65%),
+ radial-gradient(700px 460px at 4% 38%,rgba(120,94,28,.08),transparent 68%),
+ linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px),#070707;
+ background-size:auto,auto,52px 52px,52px 52px,auto;
+ color:var(--ink);font-weight:500;letter-spacing:-.025em;
+ }
+ button,input{font:inherit}
+ button{ -webkit-tap-highlight-color:transparent}
+ ::selection{background:rgba(226,188,70,.3);color:#fff}
+ .ui-icon{width:1.2em;height:1.2em;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+ .app-header{padding-top:25px;padding-bottom:13px}
+ .brand h1{font-size:clamp(17px,2vw,21px);font-weight:900;letter-spacing:-.045em}
+ .brand p{font-size:11px;color:#a9a18c;font-weight:600}
+ .brand-avatar{border-color:rgba(226,188,70,.28);background:linear-gradient(145deg,#201b0d,#080808);box-shadow:0 0 24px rgba(226,188,70,.09)}
+ .mock-pill,.count-pill,.panel-head .kicker{background:rgba(226,188,70,.1);color:#e7c45c;border:1px solid rgba(226,188,70,.2)}
+ .stepper{margin-top:12px;gap:8px}
+ .step{border:1px solid transparent;border-radius:14px;color:#928c7e}
+ .step .dot{background:rgba(255,255,255,.07);color:#b9b09b}
+ .step.active{background:rgba(226,188,70,.09);border-color:rgba(226,188,70,.24);color:#f0d16c;box-shadow:0 8px 26px rgba(0,0,0,.22)}
+ .step.active .dot{background:linear-gradient(145deg,#f2d779,#b88b20);color:#17130a;box-shadow:0 0 0 4px rgba(226,188,70,.12)}
+ .step.done .dot{background:rgba(226,188,70,.16);color:#f0d16c}
+ .wrap{padding-top:14px}
+ .panel,.summary,.progress-card,.result,.details,.account,.advanced,.bank{
+ background:linear-gradient(145deg,rgba(28,28,28,.88),rgba(13,13,13,.88));
+ border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow-sm);
+ -webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
+ }
+ .panel{border-radius:26px;padding:clamp(17px,3vw,30px)}
+ .panel.active{animation:glassEnter .42s cubic-bezier(.2,.8,.2,1) both}
+ @keyframes glassEnter{from{opacity:0;transform:translateY(12px) scale(.992);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+ .panel-head{margin-bottom:22px}
+ .panel-head h2{font-size:clamp(19px,3vw,24px);font-weight:900;letter-spacing:-.05em}
+ .panel-head p{color:#aaa392;font-size:12px;line-height:1.95}
+ .panel-head .kicker{border-radius:999px;font-size:10px;padding:5px 11px}
+ .type-grid{gap:13px}
+ .type-card,.choice,.concurrency-btn,.chip,.account,.result,.summary,.progress-card,.bank-row{
+ background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.09);color:var(--ink);
+ }
+ .type-card{border-radius:19px;padding:17px 42px 17px 17px;min-height:88px;align-items:center}
+ .type-card:hover,.choice:hover,.concurrency-btn:hover{border-color:rgba(226,188,70,.42);background:rgba(226,188,70,.055);transform:translateY(-2px)}
+ .type-card.selected{border-color:rgba(226,188,70,.7);background:linear-gradient(130deg,rgba(226,188,70,.13),rgba(226,188,70,.035));box-shadow:0 0 0 3px rgba(226,188,70,.08),0 12px 30px rgba(0,0,0,.2)}
+ .type-icon{width:47px;height:47px;border-radius:15px;background:rgba(226,188,70,.12);color:#e8c75e;font-size:20px}
+ .type-icon .ui-icon{width:23px;height:23px}
+ .type-card.type-second{background:linear-gradient(120deg,rgba(226,188,70,.09),rgba(255,255,255,.018));border-style:solid}
+ .type-card.type-second .type-icon{background:rgba(226,188,70,.13);color:#f0cf68}
+ .type-body b{font-size:13px;font-weight:800;color:#f6f0df}
+ .type-body small{color:#aaa392;font-size:10.5px;line-height:1.7}
+ .type-check{background:#151515;border-color:rgba(255,255,255,.17)}
+ .selected .type-check{background:#d9b342;border-color:#d9b342;color:#14110a}
+ .sub-mode-title,.block-title{color:#eee5ce}
+ .choice{border-radius:14px;padding:14px}
+ .choice.selected{border-color:rgba(226,188,70,.55);background:rgba(226,188,70,.09)}
+ .choice .ct b{color:#f4ecd9}
+ .choice .ct small,.hint{color:#a49d8e}
+ .choice.selected .radio{background:#d9b342;border-color:#d9b342}
+ .chip{border-radius:999px}
+ .chip.selected{background:linear-gradient(130deg,#e8c65c,#b88a20);border-color:#e8c65c;color:#17130a}
+ .segmented{background:rgba(0,0,0,.25);border-color:var(--line)}
+ .segmented button{color:#aaa392}
+ .segmented button.selected{background:linear-gradient(135deg,#e8c65c,#b88a20);color:#17130a;box-shadow:0 5px 16px rgba(226,188,70,.14)}
+ .hint.info,.alert.info{background:rgba(91,157,255,.09);border-color:rgba(91,157,255,.2);color:#a9cfff}
+ .hint.warn,.alert.warn{background:rgba(237,200,93,.09);border-color:rgba(237,200,93,.22);color:#e9cb75}
+ .alert.error{background:rgba(255,95,95,.09);border-color:rgba(255,95,95,.22);color:#ff9a9a}
+ .advanced,.bank{border-radius:16px;background:rgba(255,255,255,.025)}
+ .advanced summary,.bank summary{color:#e8dfca}
+ .account{border-radius:15px;padding:10px}
+ .account input{background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.1);border-radius:11px;color:#f5edda}
+ .account input::placeholder{color:#777164}
+ .account input:focus{outline:2px solid rgba(226,188,70,.2);border-color:#c9a53e}
+ .pw-wrap .eye{color:#c6b46f}
+ .icon-btn{background:rgba(255,255,255,.04);border-color:var(--line);color:#aaa392}
+ .icon-btn.danger{background:rgba(255,95,95,.07);border-color:rgba(255,95,95,.2);color:#ff8b8b}
+ .add-account{border:1px dashed rgba(226,188,70,.45);background:rgba(226,188,70,.06);color:#e8c65c;border-radius:14px}
+ .add-account:hover{background:rgba(226,188,70,.12);border-color:#e8c65c}
+ .summary{border-radius:18px;padding:17px}
+ .summary-title{font-weight:900;color:#f7f0df}
+ .summary-sub{color:#aaa392}
+ .tag{background:rgba(255,255,255,.045);border-color:var(--line);color:#c7bfae}
+ .tag b{color:#e7c45c}
+ .progress-card{border-radius:17px}
+ .bar{background:rgba(255,255,255,.08)}
+ .bar>i{background:linear-gradient(90deg,#a77c19,#f0d16b);box-shadow:0 0 15px rgba(226,188,70,.28)}
+ .progress-top .lbl,.results-head h3{color:#e9e0cc}
+ .progress-top .pct,.progress-foot{color:#d7bd68}
+ .result{border-radius:16px;overflow:hidden}
+ .result-head{background:rgba(255,255,255,.035);border-color:var(--line)}
+ .result-body{background:rgba(0,0,0,.13)}
+ .r-meta,.r-msg,.r-title,.r-count{color:#aaa392}
+ .status.ok{background:rgba(72,190,130,.12);color:#8ce0b2}
+ .status.run{background:rgba(91,157,255,.12);color:#9bc8ff}
+ .status.fail{background:rgba(255,95,95,.12);color:#ff9b9b}
+ .status.stop{background:rgba(255,255,255,.08);color:#bbb4a5}
+ .log-toggle{background:rgba(255,255,255,.04);border-color:var(--line);color:#e3d6b1}
+ .log{background:#050505;color:#d9d2c2;border:1px solid rgba(255,255,255,.07);border-radius:13px;font-size:11px}
+ .log .t{color:#93845c}
+ .empty{border-color:rgba(226,188,70,.22);background:rgba(226,188,70,.035);color:#a9a18e;border-radius:17px}
+ .empty b{color:#e9dfc9}
+ .empty .big{color:#e4bd4b}
+ .live-concurrency-bar{background:rgba(255,255,255,.035);border-color:var(--line);border-radius:14px}
+ .lcb-label{color:#e7dec9}.lcb-hint{color:#d9b64c}
+ .concurrency-btn{border-radius:13px}
+ .concurrency-btn.selected{border-color:rgba(226,188,70,.62);background:rgba(226,188,70,.1);box-shadow:0 0 0 2px rgba(226,188,70,.07)}
+ .concurrency-btn b,.concurrency-btn.selected b{color:#f0d16b}
+ .concurrency-btn span{color:#a9a18f}
+ .actionbar{background:rgba(9,9,9,.82);border-color:rgba(255,255,255,.1);box-shadow:0 -12px 40px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+ .btn{border-radius:14px;padding:13px 20px;font-weight:800;letter-spacing:-.02em;transition:transform .2s,box-shadow .2s,background .2s}
+ .btn:active{transform:scale(.98)}
+ .btn.primary{background:linear-gradient(135deg,#f0d36f,#bd922b);color:#17130a;box-shadow:0 8px 24px rgba(194,151,43,.2)}
+ .btn.primary:hover{background:linear-gradient(135deg,#f7df8b,#d2a63a);box-shadow:0 10px 28px rgba(194,151,43,.28)}
+ .btn.primary:disabled{background:#5b533b;color:#9d9274}
+ .btn.secondary{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);color:#e7dec9}
+ .btn.secondary:hover{background:rgba(255,255,255,.09)}
+ .btn.ghost{color:#e2c15b}
+ .btn.danger{background:linear-gradient(135deg,#c94f4f,#8d2929)}
+ .ab-meta{color:#a69e8c}.ab-meta b{color:#e7c45d}
+ .foot{margin:28px auto 18px;padding:16px 20px;gap:10px;color:#b7aa80;font-size:11px}
+ .foot b{color:#f0d16b;font-weight:800}
+ .foot-mark{width:27px;height:27px;display:grid;place-items:center;border:1px solid rgba(226,188,70,.55);border-radius:9px;color:#f0d16b;font:900 15px "Inter",sans-serif;box-shadow:0 0 18px rgba(226,188,70,.18),inset 0 0 12px rgba(226,188,70,.1)}
+ .toast{top:calc(12px + env(safe-area-inset-top));background:rgba(24,22,17,.94);border:1px solid rgba(226,188,70,.3);border-radius:14px;color:#f5e7bb;box-shadow:0 14px 38px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);padding:12px 17px;font-size:12px}
+ .live-jobs-container{padding-inline:20px}
+ .live-jobs-pill{background:linear-gradient(120deg,rgba(226,188,70,.13),rgba(255,255,255,.035));border-color:rgba(226,188,70,.32);color:#efd16c;border-radius:15px}
+ .live-pulse{background:#e4bd4b;box-shadow:0 0 12px #e4bd4b}
+ .live-act{background:rgba(226,188,70,.13);color:#f1d77c;border-radius:9px}
+ .stop-single-btn{border-radius:9px}
+ @media(max-width:720px){
+ .app-header{padding:18px 15px 8px}
+ .stepper{padding-inline:10px}
+ .step{padding:8px 3px}
+ .wrap{padding:10px 12px 132px}
+ .panel{padding:17px;border-radius:23px}
+ .type-grid{grid-template-columns:1fr}
+ .type-card{padding:14px 40px 14px 14px}
+ .actionbar-inner{padding:11px 13px calc(11px + env(safe-area-inset-bottom))}
+ .actionbar{padding-bottom:0}
+ .btn{padding:13px 15px}
+ .foot{margin-top:22px}
+ .live-jobs-container{padding-inline:12px}
+ }
+ @media(max-width:380px){
+ .brand h1{font-size:14px}
+ .panel{padding:14px}
+ .btn{padding:11px 12px;font-size:11.5px}
+ }
+ @media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;transition-duration:.001ms!important}
+ }
+
+
+ /* ===== Glass flash messages ===== */
+ .toast{
+  position:fixed;top:calc(14px + env(safe-area-inset-top));left:50%;
+  z-index:1000;display:flex;align-items:center;gap:11px;
+  width:max-content;max-width:min(460px,calc(100vw - 28px));
+  min-height:52px;padding:11px 13px 11px 15px;
+  border:1px solid rgba(255,255,255,.22);border-radius:16px;
+  color:#f5f7f6;background:rgba(19,34,30,.78);
+  box-shadow:0 16px 42px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+  backdrop-filter:blur(22px) saturate(145%);
+  opacity:0;pointer-events:none;transform:translate(-50%,-12px) scale(.985);
+  transition:opacity .2s ease,transform .2s ease;
+ }
+ .toast.show{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
+ .toast[data-type="success"]{border-color:rgba(74,222,128,.42);background:rgba(13,48,34,.82);--flash-accent:#79e6a4}
+ .toast[data-type="warning"]{border-color:rgba(245,190,75,.46);background:rgba(55,42,17,.84);--flash-accent:#f5c96b}
+ .toast[data-type="error"]{border-color:rgba(255,111,111,.48);background:rgba(62,24,26,.84);--flash-accent:#ff9292}
+ .toast[data-type="server"]{border-color:rgba(190,150,255,.48);background:rgba(43,29,65,.86);--flash-accent:#c7a8ff}
+ .toast[data-type="platform"]{border-color:rgba(113,179,255,.48);background:rgba(20,40,65,.86);--flash-accent:#93c5fd}
+ .toast[data-type="info"]{--flash-accent:#9edcc1}
+ .toast-icon{width:29px;height:29px;flex:none;display:grid;place-items:center;
+  border:1px solid color-mix(in srgb,var(--flash-accent,#9edcc1) 42%,transparent);
+  border-radius:10px;color:var(--flash-accent,#9edcc1);font-size:15px;font-weight:900;
+  background:color-mix(in srgb,var(--flash-accent,#9edcc1) 12%,transparent)}
+ .toast-message{flex:1;min-width:0;font-size:12.5px;font-weight:750;line-height:1.65;overflow-wrap:anywhere}
+ .toast-close{width:26px;height:26px;flex:none;border:0;border-radius:8px;
+  color:rgba(255,255,255,.72);background:rgba(255,255,255,.08);font:inherit;
+  font-size:17px;line-height:1;cursor:pointer}
+ .toast-close:hover{background:rgba(255,255,255,.16);color:#fff}
+ @media(max-width:480px){.toast{top:calc(9px + env(safe-area-inset-top));max-width:calc(100vw - 20px);padding:10px 11px}.toast-message{font-size:12px}}
+ @media(prefers-reduced-motion:reduce){.toast{transition:none}}
+
+</style>
+</head>
+<body>
+
+<header class="app-header">
+ <div class="brand">
+ 
+ <div>
+ <h1>أداة الحل</h1>
+ <p>الثقافة المالية · كيريو</p>
+ </div>
+ </div>
+ <div class="header-actions">
+ <span class="mock-pill"><i></i>نشط</span>
+ </div>
+</header>
+
+<nav class="stepper" aria-label="خطوات الاستخدام">
+ <button class="step active" type="button" data-step="1" aria-current="step">
+ <span class="dot"><span class="num">1</span></span><span class="lbl">النوع</span>
+ </button>
+ <button class="step" type="button" data-step="2">
+ <span class="dot"><span class="num">2</span></span><span class="lbl">الإعدادات</span>
+ </button>
+ <button class="step" type="button" data-step="3">
+ <span class="dot"><span class="num">3</span></span><span class="lbl">الحسابات</span>
+ </button>
+ <button class="step" type="button" data-step="4">
+ <span class="dot"><span class="num">4</span></span><span class="lbl">التشغيل</span>
+ </button>
+</nav>
+
+<div class="live-jobs-container">
+ <div id="liveJobsPill" class="live-jobs-pill" style="display:none;" onclick="showLiveJobs()">
+ <span class="live-pulse"></span>
+ <span id="liveJobsText"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/></svg> يوجد (1) حساب قيد الحل في الخلفية حالياً</span>
+ <span class="live-act"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg> عرض الشاشة والتقدم ←</span>
+ </div>
+</div>
+
+<main class="wrap">
+
+ <!-- STEP 1 -->
+ <section class="panel active" data-panel="1" aria-labelledby="p1title">
+ <div class="panel-head">
+ <span class="kicker">الخطوة 1</span>
+ <h2 id="p1title">اختر نوع الحل</h2>
+ <p>حدّد الخدمة المطلوبة.</p>
+ </div>
+
+ <div class="type-grid" id="typeGrid">
+ <button class="type-card type-second" type="button" data-type="qureo2">
+ <span class="type-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></span>
+ <span class="type-body">
+ <b>الصف الأول الثانوي — JavaScript</b>
+ <small>مسار JavaScript للصف الأول الثانوي، باللغتين العربية والإنجليزية.</small>
+ </span>
+ <span class="type-check">✓</span>
+ </button>
+
+ <button class="type-card" type="button" data-type="spx">
+ <span class="type-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8c-4.9 0-8.5 2.1-8.5 5s3.6 5 8.5 5 8.5-2.1 8.5-5-3.6-5-8.5-5Z"/><path d="M3.5 8v8c0 2.9 3.6 5.2 8.5 5.2s8.5-2.3 8.5-5.2V8M12 6v4m-2-2h4"/></svg></span>
+ <span class="type-body">
+ <b>الثقافة المالية</b>
+ <small>حل منهج الثقافة المالية باللغتين العربية والإنجليزية.</small>
+ </span>
+ <span class="type-check">✓</span>
+ </button>
+
+ <button class="type-card" type="button" data-type="qureo">
+ <span class="type-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3H4v6h3a2 2 0 1 1 0 4H4v8h7v-3a2 2 0 1 1 4 0v3h5v-7h-3a2 2 0 1 1 0-4h3V3h-7v3a2 2 0 1 1-4 0V3Z"/></svg></span>
+ <span class="type-body">
+ <b>Qureo</b>
+ <small>JavaScript - Python</small>
+ </span>
+ <span class="type-check">✓</span>
+ </button>
+ </div>
+ </section>
+
+ <!-- STEP 2 -->
+ <section class="panel" data-panel="2" aria-labelledby="p2title">
+ <div class="panel-head">
+ <span class="kicker">الخطوة 2</span>
+ <h2 id="p2title">الإعدادات</h2>
+ <p>حدّد المادة والمسارات واللغة. تتغير الخيارات وفقًا لنوع الخدمة المحدد.</p>
+ </div>
+ <div id="step2"></div>
+ <div class="alert error" id="step2Alert" role="alert" hidden></div>
+ </section>
+
+ <!-- STEP 3 -->
+ <section class="panel" data-panel="3" aria-labelledby="p3title">
+ <div class="panel-head">
+ <span class="kicker">الخطوة 3</span>
+ <h2 id="p3title">الحسابات</h2>
+ <p>أدخل رمز الطالب وكلمة المرور لكل حساب. يمكنك لصق قائمة كاملة بالتنسيق <b dir="ltr">كود : باسورد</b> في أول خانة.</p>
+ </div>
+
+ <div class="acc-toolbar">
+ <span class="count-pill" id="accCountPill">3 أكواد</span>
+ <span class="hint">يُعالج كل حساب بصورة مستقلة، ولا تُحفظ بيانات الدخول في المتصفح.</span>
+ </div>
+
+ <div id="accounts"></div>
+ <button class="add-account" type="button" data-action="add-account"> إضافة حساب</button>
+ <div class="alert error" id="accAlert" role="alert" hidden></div>
+ </section>
+
+ <!-- STEP 4 -->
+ <section class="panel" data-panel="4" aria-labelledby="p4title">
+ <div class="panel-head">
+ <span class="kicker">الخطوة 4</span>
+ <h2 id="p4title">المراجعة والتشغيل</h2>
+ <p>راجع الإعدادات، ثم ابدأ التشغيل من الشريط السفلي. يمكنك فتح سجل كل حساب للاطلاع على التفاصيل.</p>
+ </div>
+ <div id="review"></div>
+ </section>
+
+ <footer class="foot"><span class="foot-mark" aria-hidden="true">Y</span><span>تم تطوير هذه الأداة بواسطة <b>المطور يوسف محمد</b></span></footer>
+</main>
+
+<div class="actionbar">
+ <div class="actionbar-inner">
+ <div class="ab-side" id="abPrimary"></div>
+ <div class="ab-meta" id="abMeta">الخطوة 1 من 4</div>
+ <div class="ab-side">
+ <button class="btn secondary" type="button" id="backBtn" data-action="back" hidden>السابق</button>
+ </div>
+ </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(function(){
+ "use strict";
+
+ var state = {
+ step: 1,
+ maxStep: 1,
+ type: null,
+ subject: "7",
+ courses: ["Python", "JavaScript"],
+ lang: "ar",
+ turbo: true,
+ accounts: [],
+ running: false,
+ serverRunningCount: 0,
+ concurrency: Number(localStorage.getItem("preferred_concurrency")) || 4,
+ activeWorkers: 0,
+ finished: false,
+ results: [],
+ openLogs: {},
+ logOffsets: {},
+ notifiedStatuses: {},
+ };
+
+ var $ = function(sel, root){ return (root || document).querySelector(sel); };
+ var $$ = function(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+
+ function esc(v){
+ return String(v == null ? "" : v)
+ .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+ .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+ }
+
+ function now(){
+ var d = new Date();
+ var p = function(n){ return String(n).padStart(2, "0"); };
+ return p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+ }
+
+ function typeLabel(t){
+ if (t === "spx") return "الثقافة المالية";
+ if (t === "qureo") return "Qureo";
+ if (t === "qureo2") return "Qureo — الخيار الثاني";
+ return "—";
+ }
+
+ function subjectLabel(){
+ return state.subject === "7" ? "عربي — الثقافة المالية" : "لغات — Financial Literacy";
+ }
+
+ function sortedCourses(){
+ return ["Python", "JavaScript"].filter(function(c){ return state.courses.indexOf(c) !== -1; });
+ }
+
+ function coursesLabel(){
+ var c = sortedCourses();
+ return c.length ? c.join(" + ") : "لم يتم اختيار مسار";
+ }
+
+ function langLabel(){
+ if (state.lang === "ar") return "عربي";
+ if (state.lang === "en") return "لغات";
+ return "تلقائي";
+ }
+
+ function completeAccounts(){
+ return state.accounts.filter(function(a){ return a.code.trim() && a.password; });
+ }
+
+ function totalJobs(){
+ return completeAccounts().length;
+ }
+
+ function selectionDetail(){
+ if (state.type === "spx") return subjectLabel();
+ if (state.type === "qureo") {
+ return "Qureo — " + coursesLabel();
+ }
+ if (state.type === "qureo2") return "JavaScript فقط — " + langLabel();
+ return "—";
+ }
+
+ /* ===== Rendering ===== */
+ function showLiveJobs(){
+ state.maxStep = 4;
+ go(4);
+ }
+ window.showLiveJobs = showLiveJobs;
+
+ function renderLiveBanner(){
+ var pill = $("#liveJobsPill");
+ var txt = $("#liveJobsText");
+ if (!pill) return;
+ var cnt = state.serverRunningCount || 0;
+ if (cnt > 0 && state.step !== 4){
+ pill.style.display = "flex";
+ if (txt) txt.textContent = "يوجد (" + cnt + ") حساب قيد الحل في الخلفية حالياً";
+ } else {
+ pill.style.display = "none";
+ }
+ }
+
+ function renderAll(){
+ renderStepper();
+ renderPanels();
+ renderTypeCards();
+ renderStep2();
+ renderAccounts();
+ renderReview();
+ renderActionBar();
+ renderLiveBanner();
+ }
+
+ function renderStepper(){
+ $$(".step").forEach(function(btn){
+ var n = Number(btn.getAttribute("data-step"));
+ var locked = n > state.maxStep;
+ btn.classList.toggle("active", n === state.step);
+ btn.classList.toggle("done", n < state.step);
+ btn.classList.toggle("locked", locked && n !== state.step);
+ btn.disabled = locked && n !== state.step;
+ if (n === state.step) btn.setAttribute("aria-current", "step");
+ else btn.removeAttribute("aria-current");
+ });
+ }
+
+ function renderPanels(){
+ $$(".panel").forEach(function(p){
+ p.classList.toggle("active", Number(p.getAttribute("data-panel")) === state.step);
+ });
+ }
+
+ function renderTypeCards(){
+ $$(".type-card").forEach(function(card){
+ card.classList.toggle("selected", card.getAttribute("data-type") === state.type);
+ card.setAttribute("aria-pressed", card.getAttribute("data-type") === state.type ? "true" : "false");
+ });
+ }
+
+ function renderStep2(){
+ var host = $("#step2");
+ if (!state.type){
+ host.innerHTML = '<div class="empty"><span class="big"></span><b>يرجى تحديد نوع الخدمة أولًا</b><br>انتقل إلى الخطوة الأولى وحدّد الخدمة المطلوبة.</div>';
+ return;
+ }
+
+ var html = "";
+
+ if (state.type === "spx"){
+ html += '<div class="settings-block">' +
+ '<div class="block-title"><span class="n">1</span> مادة الثقافة المالية</div>' +
+ '<div class="choice-row">' +
+ '<button type="button" class="choice ' + (state.subject === "7" ? "selected" : "") + '" data-subject="7">' +
+ '<span class="radio"></span><span class="ct"><b>عربي</b><small>الثقافة المالية</small></span>' +
+ '</button>' +
+ '<button type="button" class="choice ' + (state.subject === "3" ? "selected" : "") + '" data-subject="3">' +
+ '<span class="radio"></span><span class="ct"><b>لغات</b><small>Financial Literacy</small></span>' +
+ '</button>' +
+ '</div></div>';
+ }
+
+ if (state.type === "qureo"){
+ html += '<div class="settings-block">' +
+ '<div class="block-title"><span class="n">1</span> مسارات Qureo</div>' +
+ '<div class="chips">' +
+ courseChip("Python") +
+ courseChip("JavaScript") +
+ '</div>' +
+ '<p class="hint">اختر مسار واحد أو الاتنين. كل مسار بيتحل بترتيب فصوله.</p>';
+ html += '</div>';
+ }
+
+ if (state.type === "qureo2"){
+ html += '<div class="settings-block">' +
+ '<div class="block-title"><span class="n">1</span> لغة الحساب</div>' +
+ '<div class="choice-row">' +
+ '<button type="button" class="choice ' + (state.lang === "ar" ? "selected" : "") + '" data-lang="ar">' +
+ '<span class="radio"></span><span class="ct"><b>عربي</b><small>JavaScript (عربي)</small></span>' +
+ '</button>' +
+ '<button type="button" class="choice ' + (state.lang === "en" ? "selected" : "") + '" data-lang="en">' +
+ '<span class="radio"></span><span class="ct"><b>لغات</b><small>JavaScript (English)</small></span>' +
+ '</button>' +
+ '</div>' +
+ '</div>';
+ }
+ html += '<div class="settings-block">' +
+ '<div class="block-title"><span class="n"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/></svg></span> سرعة الحل المتزامن (عدد الحسابات معاً)</div>' +
+ '<div class="concurrency-grid">' +
+ '<button type="button" class="concurrency-btn ' + (state.concurrency === 2 ? 'selected' : '') + '" data-concurrency="2">' +
+ '<b>2</b><span>هادئ — اتصال محدود</span>' +
+ '</button>' +
+ '<button type="button" class="concurrency-btn ' + (state.concurrency === 4 ? 'selected' : '') + '" data-concurrency="4">' +
+ '<b>4 <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/></svg></b><span>متوازن — موصى به</span>' +
+ '</button>' +
+ '<button type="button" class="concurrency-btn ' + (state.concurrency === 6 ? 'selected' : '') + '" data-concurrency="6">' +
+ '<b>6 <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4c2.5-2 5-2 6-2 0 1 0 3.5-2 6l-6 6-4-4 6-6Z"/><path d="m8 8-4 1-2 4 6 1m4 2-1 4-4 2-1-6m-3 2-2 2m7-12 4 4"/></svg></b><span>سريع — اتصال قوي</span>' +
+ '</button>' +
+ '<button type="button" class="concurrency-btn ' + (state.concurrency === 8 ? 'selected' : '') + '" data-concurrency="8">' +
+ '<b>8</b><span>أقصى أداء</span>' +
+ '</button>' +
+ '</div>' +
+ '<p class="hint">يحدد عدد الطلاب اللي بيتحل ليهم في نفس اللحظة بالتوازي. باقي الحسابات بتنتظر دورها تلقائياً.</p>' +
+ '</div>';
+
+ html += '<details class="advanced">' +
+ '<summary><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.6a8 8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.5-.9l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.8l-1.4-1.1 1.4-2.4 1.7.6a8 8 0 0 1 1.5-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.5.9l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.8Z"/></svg> خيارات متقدمة <span class="chev">▾</span></summary>' +
+ '<div class="advanced-body">' +
+ '<div class="switch">' +
+ '<div class="switch-text"><b>وضع السرعة القصوى</b><span>جلسة HTTP سريعة بدون متصفح — مفعّل افتراضيًا.</span></div>' +
+ '<label class="toggle"><input type="checkbox" id="turbo" ' + (state.turbo ? "checked" : "") + '><i></i></label>' +
+ '</div>' +
+ '</div>' +
+ '</details>';
+
+ host.innerHTML = html;
+ }
+
+ function courseChip(c){
+ var on = state.courses.indexOf(c) !== -1;
+ return '<button type="button" class="chip ' + (on ? "selected" : "") + '" data-course="' + c + '" aria-pressed="' + on + '">' +
+ '<span class="tick">✓</span>' + c + '</button>';
+ }
+
+ function renderAccounts(){
+ var host = $("#accounts");
+ if (!host) return;
+ host.innerHTML = state.accounts.map(function(a, i){
+ return '<div class="account" data-i="' + i + '">' +
+ '<input class="acc-code" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" ' +
+ 'value="' + esc(a.code) + '" placeholder="كود الطالب" aria-label="كود الطالب ' + (i + 1) + '" dir="ltr">' +
+ '<div class="pw-wrap">' +
+ '<input class="acc-pw" type="password" autocomplete="off" spellcheck="false" ' +
+ 'value="' + esc(a.password) + '" placeholder="كلمة المرور" aria-label="كلمة المرور ' + (i + 1) + '" dir="ltr">' +
+ '<button type="button" class="eye" data-action="eye" aria-label="إظهار كلمة المرور"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button>' +
+ '</div>' +
+ '<button type="button" class="icon-btn danger" data-action="del-account" aria-label="حذف الحساب">✕</button>' +
+ '</div>';
+ }).join("");
+
+ var count = state.accounts.length;
+ var pill = $("#accCountPill");
+ if (pill) pill.textContent = count + (count === 1 ? " كود" : " أكواد");
+ }
+
+ function progressSnapshot(){
+ if (!state.results.length){
+ return { pct: 0, done: 0, total: 0, running: 0, label: "لم تبدأ العملية بعد", foot: "النظام جاهز للتشغيل" };
+ }
+ var done = 0, total = 0, running = 0;
+ state.results.forEach(function(r){
+ done += r.done;
+ total += r.total;
+ if (r.status === "run") running += 1;
+ });
+ var pct = total ? Math.round(done / total * 100) : 0;
+ if (state.running){
+ return { pct: pct, done: done, total: total, running: running, label: "جاري التشغيل…", foot: running + " عملية شغالة" };
+ }
+ var ok = state.results.filter(function(r){ return r.status === "ok"; }).length;
+ var failed = state.results.filter(function(r){ return r.status === "fail"; }).length;
+ var stopped = state.results.filter(function(r){ return r.status === "stop"; }).length;
+ var label = "انتهت العملية";
+ if (stopped) label = "تم الإيقاف";
+ var foot = ok + " ناجحة";
+ if (failed) foot += " · " + failed + " فاشلة";
+ if (stopped) foot += " · " + stopped + " متوقفة";
+ return { pct: pct, done: done, total: total, running: 0, label: label, foot: foot };
+ }
+
+ function statusInfo(r){
+ if (r.status === "ok") return { cls: "ok", txt: "اكتمل" };
+ if (r.status === "fail") return { cls: "fail", txt: "فشل" };
+ if (r.status === "stop") return { cls: "stop", txt: "متوقف" };
+ return { cls: "run", txt: "جارٍ التنفيذ" };
+ }
+
+ function logHtml(lines){
+ return lines.map(function(l){
+ var cls = (l.level === "ok" || l.level === "success") ? "ok" : (l.level === "err" || l.level === "error") ? "err" : (l.level === "wrn" || l.level === "warning") ? "wrn" : l.level === "sys" ? "sys" : "";
+ return '<div class="' + cls + '"><span class="t">' + esc(l.t) + '</span>' + esc(l.msg) + '</div>';
+ }).join("");
+ }
+
+ function renderResults(){
+ var host = $("#results");
+ if (!host) return;
+ if (!state.results.length){
+ host.innerHTML = '<div class="empty"><span class="big"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4c2.5-2 5-2 6-2 0 1 0 3.5-2 6l-6 6-4-4 6-6Z"/><path d="m8 8-4 1-2 4 6 1m4 2-1 4-4 2-1-6m-3 2-2 2m7-12 4 4"/></svg></span><b>النظام جاهز للتشغيل</b><br>اضغط «بدء التشغيل» من الشريط السفلي لمتابعة حالة كل حساب وسجله.</div>';
+ return;
+ }
+
+ var keepScroll = {};
+ Object.keys(state.openLogs).forEach(function(k){
+ if (!state.openLogs[k]) return;
+ var box = host.querySelector('[data-log="' + k + '"] .log');
+ if (!box) return;
+ keepScroll[k] = {
+ top: box.scrollTop,
+ atBottom: box.scrollHeight - box.scrollTop - box.clientHeight < 24
+ };
+ });
+
+ host.innerHTML = state.results.map(function(r, i){
+ var st = statusInfo(r);
+ var pct = r.total ? Math.round(r.done / r.total * 100) : 0;
+ var open = !!state.openLogs[i];
+ var msgCls = r.status === "ok" ? "ok" : r.status === "fail" ? "fail" : "";
+ var singleStop = r.status === "run" ? '<button type="button" class="stop-single-btn" data-action="stop-single" data-code="' + esc(r.code) + '">إيقاف ✕</button>' : '';
+ return '<article class="result">' +
+ '<div class="result-head">' +
+ '<div class="r-id"><div class="r-code">' + esc(r.code) + '</div><div class="r-meta">' + esc(r.detail) + '</div></div>' +
+ singleStop +
+ '<span class="status ' + st.cls + '" style="margin-inline-start:8px">' + st.txt + '</span>' +
+ '</div>' +
+ '<div class="result-body">' +
+ '<p class="r-msg ' + msgCls + '">' + esc(r.message || r.phase || "في الانتظار…") + '</p>' +
+ '<div class="r-bar-row">' +
+ '<span class="r-title">' + esc(r.title || "—") + '</span>' +
+ '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+ '<span class="r-count">' + r.done + '/' + r.total + '</span>' +
+ '</div>' +
+ '<button type="button" class="log-toggle" data-action="toggle-log" data-i="' + i + '" aria-expanded="' + open + '">' +
+ (open ? "إخفاء سجل التنفيذ" : "عرض سجل التنفيذ") + ' <span class="chev">▼</span>' +
+ '</button>' +
+ '<div class="log-wrap ' + (open ? "open" : "") + '" data-log="' + i + '">' +
+ '<div class="log">' + logHtml(r.lines) + '</div>' +
+ '</div>' +
+ '</div>' +
+ '</article>';
+ }).join("");
+
+ Object.keys(state.openLogs).forEach(function(k){
+ if (!state.openLogs[k]) return;
+ var box = host.querySelector('[data-log="' + k + '"] .log');
+ if (!box) return;
+ var keep = keepScroll[k];
+ if (keep && !keep.atBottom) box.scrollTop = keep.top;
+ else box.scrollTop = box.scrollHeight;
+ });
+ }
+
+ function renderReview(){
+ var host = $("#review");
+ if (!host) return;
+ if (!state.type){
+ host.innerHTML = '<div class="empty"><span class="big"></span><b>لم يتم تحديد نوع الخدمة</b><br>انتقل إلى الخطوة الأولى وحدّد الخدمة المطلوبة.</div>';
+ return;
+ }
+
+ var prog = progressSnapshot();
+ var n = completeAccounts().length;
+ var jobs = totalJobs();
+ var over = jobs > 20;
+
+ var html = '<div class="summary">' +
+ '<div class="summary-top">' +
+ '<div><div class="summary-title">' + esc(typeLabel(state.type)) + '</div>' +
+ '<div class="summary-sub">' + esc(selectionDetail()) + '</div></div>' +
+ '<button type="button" class="btn ghost" data-action="edit-settings">تعديل الإعدادات</button>' +
+ '</div>' +
+ '<div class="summary-chips">' +
+ '<span class="tag"> <b>' + n + '</b> حساب</span>' +
+ '<span class="tag"> <b>' + jobs + '</b> عملية</span>' +
+ '<span class="tag"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/></svg> <b>' + (state.concurrency || 4) + '</b> بالتوازي</span>' +
+ '<span class="tag">' + (state.turbo ? "سرعة قصوى" : "الوضع العادي") + '</span>' +
+ '</div>';
+
+ if (over){
+ html += '<div class="alert warn"> الحد الأقصى 20 عملية في المرة. قلّل الحسابات أو غيّر النوع قبل البدء.</div>';
+ }
+ html += '<div class="alert error" id="runAlert" role="alert" hidden></div>';
+ html += '</div>';
+
+ html += '<div class="live-concurrency-bar">' +
+ '<span class="lcb-label"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/></svg> سرعة الحل المتزامن:</span>' +
+ '<div class="segmented">' +
+ '<button type="button" class="' + (state.concurrency === 2 ? 'selected' : '') + '" data-live-c="2">2 عادي</button>' +
+ '<button type="button" class="' + (state.concurrency === 4 ? 'selected' : '') + '" data-live-c="4">4 متوازن</button>' +
+ '<button type="button" class="' + (state.concurrency === 6 ? 'selected' : '') + '" data-live-c="6">6 سريع</button>' +
+ '<button type="button" class="' + (state.concurrency === 8 ? 'selected' : '') + '" data-live-c="8">8 أقصى طاقة</button>' +
+ '</div>' +
+ '<span class="lcb-hint">(' + (state.activeWorkers || 0) + ' قيد التنفيذ الآن)</span>' +
+ '</div>';
+
+ html += '<div class="progress-card">' +
+ '<div class="progress-top"><span class="lbl">' + esc(prog.label) + '</span><span class="pct">' + prog.pct + '%</span></div>' +
+ '<div class="bar"><i style="width:' + prog.pct + '%"></i></div>' +
+ '<div class="progress-foot"><span>' + (prog.total ? prog.done + " من " + prog.total : "—") + '</span><span>' + esc(prog.foot) + '</span></div>' +
+ '</div>';
+
+ if (state.results.length){
+ var ok = state.results.filter(function(r){ return r.status === "ok"; }).length;
+ var hasFinished = state.results.some(function(r){ return r.status !== "run"; });
+ var clearBtn = hasFinished ? '<button type="button" class="btn ghost" style="font-size:11px;padding:2px 8px;margin-inline-start:auto" data-action="clear-finished"> مسح المكتملة</button>' : '';
+ html += '<div class="results-head"><h3>الحسابات والعمليات</h3><span style="display:flex;align-items:center;gap:6px">' + state.results.length + ' عملية · ' + ok + ' ناجحة' + clearBtn + '</span></div>';
+ }
+
+ html += '<div id="results" class="results"></div>';
+
+ host.innerHTML = html;
+ renderResults();
+ }
+
+ function renderActionBar(){
+ var primary = $("#abPrimary");
+ var meta = $("#abMeta");
+ var back = $("#backBtn");
+ if (!primary) return;
+
+ var prog = progressSnapshot();
+ var over = totalJobs() > 20;
+
+ if (state.step === 4){
+ var html = "";
+ if (state.serverRunningCount > 0){
+ html += '<button class="btn danger" type="button" data-action="stop">إيقاف جميع العمليات</button>';
+ html += '<button class="btn primary" type="button" data-action="new-job" style="margin-inline-start:8px">إضافة حسابات</button>';
+ meta.innerHTML = 'جاري التشغيل (' + state.serverRunningCount + ') — <b>' + prog.done + ' / ' + prog.total + '</b>';
+ } else if (state.finished){
+ html += '<button class="btn primary" type="button" data-action="restart">بدء عملية جديدة</button>';
+ meta.innerHTML = "انتهت — <b>" + prog.foot + "</b>";
+ } else {
+ html += '<button class="btn primary" type="button" data-action="start" ' + (over ? "disabled" : "") + '>بدء التشغيل</button>';
+ meta.innerHTML = 'النظام جاهز للتشغيل · <b>' + totalJobs() + '</b> عملية';
+ }
+ primary.innerHTML = html;
+ back.hidden = false;
+ return;
+ }
+
+ var nextDisabled = (state.step === 1 && !state.type) ? "disabled" : "";
+ var phtml = '<button class="btn primary" type="button" data-action="next" ' + nextDisabled + '>التالي</button>';
+ if (state.serverRunningCount > 0){
+ phtml += '<button class="btn secondary" type="button" onclick="showLiveJobs()" style="margin-inline-start:8px"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg> العمليات الجارية (' + state.serverRunningCount + ')</button>';
+ }
+ primary.innerHTML = phtml;
+ meta.innerHTML = 'الخطوة <b>' + state.step + '</b> من 4';
+ back.hidden = state.step === 1;
+ }
+
+ /* ===== Glass flash messages and inline alerts ===== */
+ var flashQueue = [];
+ var flashActive = false;
+ var flashTimer = null;
+ var flashExitTimer = null;
+ var flashIcons = {
+  success: "✓",
+  warning: "!",
+  error: "×",
+  server: "⚙",
+  platform: "◇",
+  info: "i"
+ };
+
+ function normalizeFlashType(type){
+  if (type === "warn" || type === "skip") return "warning";
+  if (type === "err") return "error";
+  return ["success", "warning", "error", "server", "platform", "info"].indexOf(type) !== -1
+   ? type : "info";
+ }
+
+ function hideFlash(){
+  var host = $("#toast");
+  if (!host || !flashActive) return;
+  clearTimeout(flashTimer);
+  host.classList.remove("show");
+  clearTimeout(flashExitTimer);
+  flashExitTimer = setTimeout(function(){
+   flashActive = false;
+   showNextFlash();
+  }, 190);
+ }
+
+ function showNextFlash(){
+  var host = $("#toast");
+  if (!host || flashActive || !flashQueue.length) return;
+  var item = flashQueue.shift();
+  flashActive = true;
+  host.dataset.type = item.type;
+  host.setAttribute("role", item.type === "error" || item.type === "server" || item.type === "platform" ? "alert" : "status");
+  host.setAttribute("aria-live", item.type === "error" || item.type === "server" || item.type === "platform" ? "assertive" : "polite");
+  host.replaceChildren();
+
+  var icon = document.createElement("span");
+  icon.className = "toast-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = flashIcons[item.type];
+
+  var message = document.createElement("span");
+  message.className = "toast-message";
+  message.textContent = item.message;
+
+  var close = document.createElement("button");
+  close.className = "toast-close";
+  close.type = "button";
+  close.setAttribute("aria-label", "إغلاق الرسالة");
+  close.textContent = "×";
+  close.addEventListener("click", hideFlash, { once: true });
+
+  host.append(icon, message, close);
+  window.requestAnimationFrame(function(){ host.classList.add("show"); });
+  flashTimer = setTimeout(hideFlash, item.duration);
+ }
+
+ function flash(message, type, duration){
+  var text = String(message == null ? "" : message).trim();
+  if (!text) return;
+  var normalizedType = normalizeFlashType(type || "info");
+  flashQueue.push({
+   message: text,
+   type: normalizedType,
+   duration: Math.max(2200, Number(duration) || (normalizedType === "error" || normalizedType === "server" ? 5200 : 3600))
+  });
+  if (flashQueue.length > 5) flashQueue.shift();
+  showNextFlash();
+ }
+
+ function toast(message, type){
+  flash(message, type || "info");
+ }
+
+ function showAlert(id, msg, kind, flashType){
+  var el = $("#" + id);
+  if (el){
+   el.className = "alert " + (kind || "error");
+   el.textContent = msg;
+   el.hidden = false;
+  }
+  flash(msg, flashType || (kind === "warn" ? "warning" : "error"));
+ }
+
+ function clearAlert(id){
+  var el = $("#" + id);
+  if (!el) return;
+  el.hidden = true;
+  el.textContent = "";
+ }
+
+ function errorFlashType(response, result){
+  if (result && result.error_type && ["warning", "platform", "server"].indexOf(result.error_type) !== -1){
+   return result.error_type;
+  }
+  if (response && response.status >= 500) return "server";
+  if (response && response.status >= 400) return "platform";
+  return "error";
+ }
+
+ function responseMessage(result, fallback){
+  return result && result.message ? result.message : fallback;
+ }
+
+ /* ===== Navigation ===== */
+ function go(n){
+ n = Math.max(1, Math.min(4, n));
+ state.step = n;
+ if (n > state.maxStep) state.maxStep = n;
+ renderAll();
+ var top = $(".stepper");
+ if (top) top.scrollIntoView({ block: "start", behavior: "smooth" });
+ }
+
+ function invalidateResults(){
+ if (state.serverRunningCount > 0) return;
+ if (!state.results.length && !state.finished) return;
+ state.results = [];
+ state.openLogs = {};
+ state.finished = false;
+ state.running = false;
+ }
+
+ function next(){
+ clearAlert("step2Alert");
+ clearAlert("accAlert");
+ clearAlert("runAlert");
+
+ if (state.step === 1){
+ if (!state.type){ toast("اختار نوع الحل الأول", "warning"); return; }
+ go(2);
+ return;
+ }
+
+ if (state.step === 2){
+ if (state.type === "qureo" && state.courses.length === 0){
+ showAlert("step2Alert", "اختر مسارًا واحدًا على الأقل من Qureo: Python أو JavaScript.");
+ return;
+ }
+ if (state.type === "qureo2" && state.lang !== "ar" && state.lang !== "en"){
+ state.lang = "ar";
+ }
+ go(3);
+ return;
+ }
+
+ if (state.step === 3){
+ var withCode = state.accounts.filter(function(a){ return a.code.trim(); });
+ var missingPw = withCode.filter(function(a){ return !a.password; });
+ var complete = withCode.filter(function(a){ return a.password; });
+ if (missingPw.length){
+ showAlert("accAlert", "فيه " + missingPw.length + " كود بدون كلمة مرور — أكمله أو احذفه.");
+ return;
+ }
+ if (!complete.length){
+ showAlert("accAlert", "اكتب كود وكلمة مرور لحساب واحد على الأقل.");
+ return;
+ }
+ var codes = complete.map(function(a){ return a.code.trim(); });
+ var dup = codes.filter(function(c, i){ return codes.indexOf(c) !== i; });
+ if (dup.length){
+ showAlert("accAlert", "فيه كود مكرر: " + dup[0] + " — شيل التكرار الأول.");
+ return;
+ }
+ state.accounts = complete.map(function(a){ return { code: a.code.trim(), password: a.password }; });
+ renderAccounts();
+ go(4);
+ return;
+ }
+
+ if (state.step === 4 && !state.finished){
+ startRun();
+ }
+ }
+
+ function collectPayload(){
+ var complete = completeAccounts();
+ var payload = {
+ mode: state.type,
+ accounts: complete.map(function(a){ return { code: a.code, password: a.password }; }),
+ concurrency: state.concurrency || 4
+ };
+ if (state.type === "spx") payload.subject = state.subject;
+ if (state.type === "qureo") payload.courses = state.courses;
+ if (state.type === "qureo2") {
+ payload.lang = state.lang;
+ payload.courses = ["JavaScript"];
+ }
+ payload.turbo = !!state.turbo;
+ return payload;
+ }
+
+ async function startRun(){
+ var complete = completeAccounts();
+ if (!complete.length){
+ showAlert("runAlert", "مفيش حسابات كاملة. ارجع للخطوة 3.");
+ return;
+ }
+ if (totalJobs() > 20){
+ showAlert("runAlert", "الحد الأقصى 20 عملية في المرة. قلّل الحسابات أو غيّر النوع.");
+ return;
+ }
+
+ clearAlert("runAlert");
+ var payload = collectPayload();
+ try {
+ const res = await fetch("/api/start", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+ });
+ const r = await res.json().catch(function(){ return null; });
+ if (!res.ok || !r || !r.ok){
+  var message = responseMessage(r, "تعذّر بدء العملية.");
+  var type = errorFlashType(res, r);
+  showAlert("runAlert", message, type === "warning" ? "warn" : "error", type);
+  return;
+ }
+ toast(r.message || "بدأت العملية بنجاح!", "success");
+ clearAlert("runAlert");
+ state.maxStep = 4;
+ state.step = 4;
+ state.running = true;
+ state.finished = false;
+ renderAll();
+ poll();
+ } catch (e) {
+  showAlert("runAlert", "تعذّر الاتصال بالخادم — تأكد أن الأداة شغالة.", "error", "server");
+ }
+ }
+
+ async function setConcurrency(val){
+ val = Number(val) || 4;
+ state.concurrency = val;
+ try { localStorage.setItem("preferred_concurrency", val); } catch(e){}
+ renderStep2();
+ renderReview();
+ try {
+  const res = await fetch("/api/concurrency", {
+   method: "POST",
+   headers: { "Content-Type": "application/json" },
+   body: JSON.stringify({ concurrency: val })
+  });
+  const result = await res.json().catch(function(){ return null; });
+  if (!res.ok || !result || !result.ok){
+   toast(responseMessage(result, "تعذّر تعديل سرعة التشغيل."), errorFlashType(res, result));
+   return;
+  }
+  toast("تم ضبط سرعة الحل المتزامن: " + val + " حسابات بالتوازي.", "success");
+  poll();
+ } catch(e){
+  toast("تعذّر الاتصال بالخادم أثناء تعديل السرعة.", "server");
+ }
+ }
+
+ var pollTimer = null;
+ var statusConnectionLost = false;
+ function applyStatus(s){
+ if (!s) return;
+ var accs = s.accounts || [];
+ state.serverRunningCount = s.running_count != null ? s.running_count : accs.filter(function(a){ return a.running; }).length;
+ state.running = state.serverRunningCount > 0;
+ state.finished = accs.length > 0 && state.serverRunningCount === 0;
+ if (s.concurrency != null) state.concurrency = s.concurrency;
+ state.activeWorkers = s.active_workers || 0;
+
+ var currentAccountIds = accs.map(function(a){ return a.id || a.code; });
+ Object.keys(state.logOffsets).forEach(function(id){ if (currentAccountIds.indexOf(id) === -1){ delete state.logOffsets[id]; delete state.notifiedStatuses[id]; } });
+ state.results = accs.map(function(a){
+  var accountId = a.id || a.code;
+  var status = a.running ? "run" : (a.finished ? (a.success ? "ok" : ((a.phase === "متوقّف" || (a.message || "").indexOf("تم الإيقاف") !== -1) ? "stop" : "fail")) : "wait");
+  var lines = Array.isArray(a.lines) ? a.lines : [];
+  var previousOffset = state.logOffsets[accountId];
+
+  if (previousOffset != null){
+   var newLines = previousOffset <= lines.length ? lines.slice(previousOffset) : lines;
+   newLines.forEach(function(line){
+    if (line.level === "warning" || line.level === "warn"){
+     toast("تنبيه: " + (line.msg || "تم تخطي بند أثناء التنفيذ."), "warning", 3800);
+    } else if (line.level === "error" || line.level === "err"){
+     toast(line.msg || "حدث خطأ أثناء تنفيذ العملية.", "error", 5200);
+    }
+   });
+  }
+  state.logOffsets[accountId] = lines.length;
+
+  var previousStatus = state.notifiedStatuses[accountId];
+  if (previousStatus === "run" && status !== "run"){
+   if (status === "ok"){
+    toast("اكتملت عملية الحساب " + a.code + " بنجاح.", "success");
+   } else if (status === "stop"){
+    toast("تم إيقاف عملية الحساب " + a.code + ".", "warning");
+   } else if (status === "fail"){
+    toast((a.message || "فشلت عملية الحساب.") + " — " + a.code, "error", 5200);
+   }
+  }
+  state.notifiedStatuses[accountId] = status;
+
+  return {
+   id: accountId,
+   code: a.code,
+   mode: a.mode,
+   detail: a.detail || "",
+   status: status,
+   phase: a.phase || "",
+   message: a.message || "",
+   title: (a.progress && a.progress.title) || a.phase || "",
+   done: (a.progress && a.progress.done) || 0,
+   total: (a.progress && a.progress.total) || 0,
+   lines: lines
+  };
+ });
+
+ renderLiveBanner();
+ if (state.step === 4) {
+ renderReview();
+ renderActionBar();
+ renderStepper();
+ }
+ }
+
+ async function poll(){
+ clearTimeout(pollTimer);
+ try {
+  const res = await fetch("/api/status", { cache: "no-store" });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const status = await res.json();
+  if (!status || !Array.isArray(status.accounts)) throw new Error("Invalid status payload");
+  applyStatus(status);
+  if (statusConnectionLost){
+   statusConnectionLost = false;
+   toast("تمت استعادة الاتصال بالخادم.", "success");
+  }
+ } catch (e) {
+  if (!statusConnectionLost){
+   statusConnectionLost = true;
+   toast("انقطع الاتصال بخادم المنصة. جارٍ إعادة المحاولة تلقائياً.", "server", 6000);
+  }
+ }
+ var interval = (state.serverRunningCount > 0 || state.step === 4) ? 900 : 2000;
+ pollTimer = setTimeout(poll, interval);
+ }
+
+ async function stopRun(){
+ try {
+  const res = await fetch("/api/stop", {
+   method: "POST",
+   headers: { "Content-Type": "application/json" },
+   body: JSON.stringify({})
+  });
+  const result = await res.json().catch(function(){ return null; });
+  if (!res.ok || !result || !result.ok){
+   toast(responseMessage(result, "تعذّر إرسال طلب الإيقاف."), errorFlashType(res, result));
+   return;
+  }
+  toast(result.message || "تم طلب إيقاف جميع العمليات...", "warning");
+  poll();
+ } catch (e) {
+  toast("تعذّر الاتصال بالخادم لإيقاف العمليات.", "server");
+ }
+ }
+
+ async function stopSingle(code){
+ if (!code) return;
+ try {
+  const res = await fetch("/api/stop", {
+   method: "POST",
+   headers: { "Content-Type": "application/json" },
+   body: JSON.stringify({ code: code })
+  });
+  const result = await res.json().catch(function(){ return null; });
+  if (!res.ok || !result || !result.ok){
+   toast(responseMessage(result, "تعذّر إيقاف الحساب."), errorFlashType(res, result));
+   return;
+  }
+  toast(result.message || ("تم طلب إيقاف الحساب: " + code), "warning");
+  poll();
+ } catch (e) {
+  toast("تعذّر الاتصال بالخادم لإيقاف الحساب.", "server");
+ }
+ }
+
+ async function clearFinished(){
+ try {
+  const res = await fetch("/api/clear_finished", { method: "POST" });
+  const result = await res.json().catch(function(){ return null; });
+  if (!res.ok || !result || !result.ok){
+   toast(responseMessage(result, "تعذّر مسح العمليات المكتملة."), errorFlashType(res, result));
+   return;
+  }
+  toast(result.message || "تم مسح العمليات المكتملة.", "success");
+  poll();
+ } catch (e) {
+  toast("تعذّر الاتصال بالخادم لمسح العمليات المكتملة.", "server");
+ }
+ }
+
+ function restart(){
+ state.step = 1;
+ state.maxStep = 1;
+ state.openLogs = {};
+ state.finished = false;
+ renderAll();
+ var top = $(".stepper");
+ if (top) top.scrollIntoView({ block: "start", behavior: "smooth" });
+ toast("جاهز لعملية جديدة — الأكواد محفوظة", "info");
+ }
+
+ /* ===== Events ===== */
+ document.addEventListener("click", function(e){
+ var stepBtn = e.target.closest(".step");
+ if (stepBtn){
+ var n = Number(stepBtn.getAttribute("data-step"));
+ if (!stepBtn.disabled && n <= state.maxStep) go(n);
+ return;
+ }
+
+ var typeCard = e.target.closest(".type-card");
+ if (typeCard){
+ var t = typeCard.getAttribute("data-type");
+ if (state.type !== t) invalidateResults();
+ state.type = t;
+ if (t === "qureo2" && state.lang !== "ar" && state.lang !== "en") state.lang = "ar";
+ clearAlert("step2Alert");
+ renderAll();
+ return;
+ }
+
+ var choice = e.target.closest("[data-subject]");
+ if (choice){
+ var nextSubject = choice.getAttribute("data-subject");
+ if (state.subject !== nextSubject) invalidateResults();
+ state.subject = nextSubject;
+ renderStep2();
+ renderActionBar();
+ return;
+ }
+
+ var chip = e.target.closest("[data-course]");
+ if (chip){
+ var c = chip.getAttribute("data-course");
+ var i = state.courses.indexOf(c);
+ if (i === -1) state.courses.push(c);
+ else state.courses.splice(i, 1);
+ // ترتيب المسارات ثابت ليتوافق مع الواجهة.
+ state.courses = ["Python", "JavaScript"].filter(function(x){ return state.courses.indexOf(x) !== -1; });
+ invalidateResults();
+ renderStep2();
+ return;
+ }
+
+ var seg = e.target.closest("[data-lang]");
+ if (seg){
+ var nextLang = seg.getAttribute("data-lang");
+ if (state.lang !== nextLang) invalidateResults();
+ state.lang = nextLang;
+ renderStep2();
+ return;
+ }
+
+ var cBtn = e.target.closest("[data-concurrency]");
+ if (cBtn){
+ var cv = cBtn.getAttribute("data-concurrency");
+ setConcurrency(cv);
+ return;
+ }
+
+ var liveC = e.target.closest("[data-live-c]");
+ if (liveC){
+ var lcv = liveC.getAttribute("data-live-c");
+ setConcurrency(lcv);
+ return;
+ }
+
+ var action = e.target.closest("[data-action]");
+ if (action){
+ var a = action.getAttribute("data-action");
+
+ if (a === "next"){ next(); return; }
+ if (a === "back"){ go(state.step - 1); return; }
+ if (a === "start"){ startRun(); return; }
+ if (a === "stop"){ stopRun(); return; }
+ if (a === "restart"){ restart(); return; }
+ if (a === "edit-settings"){ go(2); return; }
+ if (a === "new-job"){ go(1); return; }
+ if (a === "stop-single"){ stopSingle(action.getAttribute("data-code")); return; }
+ if (a === "clear-finished"){ clearFinished(); return; }
+
+ if (a === "add-account"){
+ invalidateResults();
+ state.accounts.push({ code: "", password: "" });
+ renderAccounts();
+ var last = $("#accounts .account:last-child .acc-code");
+ if (last) last.focus();
+ return;
+ }
+
+ if (a === "del-account"){
+ var row = action.closest(".account");
+ var idx = Number(row.getAttribute("data-i"));
+ invalidateResults();
+ state.accounts.splice(idx, 1);
+ if (!state.accounts.length) state.accounts.push({ code: "", password: "" });
+ renderAccounts();
+ clearAlert("accAlert");
+ return;
+ }
+
+ if (a === "eye"){
+ var wrap = action.closest(".pw-wrap");
+ var input = wrap.querySelector("input");
+ var showing = input.type === "text";
+ input.type = showing ? "password" : "text";
+ action.innerHTML = showing ? '<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>' : '<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3 21 21M10.6 6.2A10.8 10.8 0 0 1 12 6c6.1 0 9.5 6 9.5 6a15 15 0 0 1-3.1 3.6M6.2 6.8C3.8 8.3 2.5 12 2.5 12s3.4 6 9.5 6c1.1 0 2.1-.2 3-.5"/></svg>';
+ action.setAttribute("aria-label", showing ? "إظهار كلمة المرور" : "إخفاء كلمة المرور");
+ return;
+ }
+
+ if (a === "toggle-log"){
+ var ri = Number(action.getAttribute("data-i"));
+ state.openLogs[ri] = !state.openLogs[ri];
+ renderResults();
+ return;
+ }
+ }
+ });
+
+ document.addEventListener("input", function(e){
+ var row = e.target.closest(".account");
+ if (!row) return;
+ var i = Number(row.getAttribute("data-i"));
+ if (!state.accounts[i]) return;
+ if (e.target.classList.contains("acc-code")){
+ state.accounts[i].code = e.target.value;
+ invalidateResults();
+ clearAlert("accAlert");
+ } else if (e.target.classList.contains("acc-pw")){
+ state.accounts[i].password = e.target.value;
+ invalidateResults();
+ clearAlert("accAlert");
+ }
+ });
+
+ document.addEventListener("change", function(e){
+ if (e.target.id === "turbo"){
+ state.turbo = e.target.checked;
+ renderActionBar();
+ }
+ });
+
+ // Paste a whole list into the first code field: "code : password" per line
+ document.addEventListener("paste", function(e){
+ var input = e.target.closest && e.target.closest(".acc-code");
+ if (!input) return;
+ var text = (e.clipboardData || window.clipboardData).getData("text");
+ if (!text || (!text.includes("\n") && !text.includes(":"))) return;
+
+ e.preventDefault();
+ var parsed = text.split(/\r?\n/).map(function(line){
+ var parts = line.trim().split(/\s*[:,\t]\s*/);
+ if (parts.length < 2) return null;
+ var code = parts[0].trim();
+ var pw = parts.slice(1).join(" ").trim();
+ if (!code || !pw) return null;
+ return { code: code, password: pw };
+ }).filter(Boolean);
+
+ if (!parsed.length){
+ toast("الصيغة غير مفهومة — استخدم: كود : باسورد", "warning");
+ return;
+ }
+
+ // Replace the current blank row + append the rest, and skip duplicates
+ invalidateResults();
+ var row = input.closest(".account");
+ var idx = Number(row.getAttribute("data-i"));
+ var existing = state.accounts.map(function(x){ return x.code.trim(); });
+ var seen = {};
+ var toAdd = parsed.filter(function(p){
+ if (existing.indexOf(p.code) !== -1 || seen[p.code]) return false;
+ seen[p.code] = true;
+ return true;
+ });
+ if (state.accounts[idx] && !state.accounts[idx].code.trim()){
+ state.accounts.splice(idx, 1);
+ }
+ state.accounts = state.accounts.concat(toAdd);
+ if (!state.accounts.length) state.accounts.push({ code: "", password: "" });
+ renderAccounts();
+ toast("تمت إضافة " + toAdd.length + " حساب", "success");
+ });
+
+ // Error boundaries: expose unexpected UI errors as a platform flash.
+ var lastClientErrorAt = 0;
+ function reportClientError(){
+  var currentTime = Date.now();
+  if (currentTime - lastClientErrorAt < 1800) return;
+  lastClientErrorAt = currentTime;
+  toast("حدث خطأ غير متوقع في واجهة المنصة. حدّث الصفحة ثم أعد المحاولة.", "platform", 6000);
+ }
+ window.addEventListener("error", reportClientError);
+ window.addEventListener("unhandledrejection", reportClientError);
+ window.addEventListener("offline", function(){
+  toast("لا يوجد اتصال بالإنترنت حالياً.", "server", 6000);
+ });
+ window.addEventListener("online", function(){
+  toast("عاد اتصال الإنترنت.", "success");
+  poll();
+ });
+
+ // Boot
+ renderAll();
+ poll().then(function(){
+ if (state.serverRunningCount > 0){
+ state.maxStep = 4;
+ state.step = 4;
+ renderAll();
+ }
+ });
+})();
+</script>
+</body>
+</html>
