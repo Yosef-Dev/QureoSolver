@@ -12,7 +12,6 @@ import os
 import sys
 import threading
 import time
-import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
 
@@ -946,51 +945,61 @@ def make_handler():
 
 
 def main() -> None:
-    sys.stdout = _StdoutSink()
+    """تشغيل خادم التطبيق في بيئة الاستضافة أو محلياً."""
+    global _ORIGINAL_STDOUT
+
+    # الاحتفاظ بمخرج النظام الأصلي قبل توجيه مخرجات المحركات.
+    _ORIGINAL_STDOUT = sys.stdout
     http_server = None
-    selected_port = None
-
-    for offset in range(6):
-        candidate_port = PORT_BASE + offset
-        try:
-            http_server = _SolverHTTPServer(("0.0.0.0", candidate_port), make_handler())
-            selected_port = candidate_port
-            break
-        except OSError:
-            try:
-                http_server = _SolverHTTPServer(
-                    ("127.0.0.1", candidate_port), make_handler()
-                )
-                selected_port = candidate_port
-                break
-            except OSError:
-                continue
-
-    if http_server is None or selected_port is None:
-        _ORIGINAL_STDOUT.write(
-            "[app] لا يوجد منفذ متاح ضمن النطاق 8700–8705 — أغلق النسخ القديمة ثم أعد المحاولة.\n"
-        )
-        return
-
-    local_url = f"http://127.0.0.1:{selected_port}/"
-    _ORIGINAL_STDOUT.write("[app] الخادم يعمل الآن بنجاح!\n")
-    _ORIGINAL_STDOUT.write(f"[app] الرابط المحلي: http://localhost:{selected_port}\n")
-    _ORIGINAL_STDOUT.write(f"[app] أو: {local_url}\n")
-
-    if not os.environ.get("TOOL_NO_BROWSER"):
-        try:
-            timer = threading.Timer(1.2, webbrowser.open, args=(local_url,))
-            timer.daemon = True
-            timer.start()
-        except Exception:
-            pass
 
     try:
-        http_server.serve_forever()
+        sys.stdout = _StdoutSink()
+
+        # تستخدم منصات الاستضافة PORT، والتشغيل المحلي يستخدم PORT_BASE.
+        raw_port = os.environ.get("PORT", "").strip()
+        if raw_port:
+            try:
+                selected_port = int(raw_port)
+            except ValueError:
+                _ORIGINAL_STDOUT.write("[FATAL] قيمة PORT غير صالحة.\n")
+                raise SystemExit(1)
+        else:
+            selected_port = PORT_BASE
+
+        if not 1 <= selected_port <= 65535:
+            _ORIGINAL_STDOUT.write("[FATAL] رقم PORT يجب أن يكون بين 1 و65535.\n")
+            raise SystemExit(1)
+
+        # يجب أن يستمع الخادم على جميع واجهات الشبكة داخل الحاوية.
+        http_server = _SolverHTTPServer(
+            ("0.0.0.0", selected_port),
+            make_handler(),
+        )
+
+        _ORIGINAL_STDOUT.write("[APP] Solver Server started successfully.\n")
+        _ORIGINAL_STDOUT.write(f"[APP] Listening on 0.0.0.0:{selected_port}\n")
+        _ORIGINAL_STDOUT.write("[APP] Health endpoint: /api/health\n")
+
+        http_server.serve_forever(poll_interval=0.5)
+
     except KeyboardInterrupt:
-        _ORIGINAL_STDOUT.write("\n[app] تم إيقاف الخادم.\n")
+        _ORIGINAL_STDOUT.write("\n[APP] Server shutdown requested.\n")
+
+    except SystemExit:
+        raise
+
+    except OSError as exc:
+        _ORIGINAL_STDOUT.write(f"[FATAL] Server startup/network error: {exc}\n")
+        raise SystemExit(1)
+
+    except Exception as exc:
+        _ORIGINAL_STDOUT.write(f"[FATAL] Unexpected server error: {exc}\n")
+        raise SystemExit(1)
+
     finally:
-        http_server.server_close()
+        if http_server is not None:
+            http_server.server_close()
+        sys.stdout = _ORIGINAL_STDOUT
 
 
 if __name__ == "__main__":
